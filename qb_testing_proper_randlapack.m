@@ -77,7 +77,7 @@ function [Q, B] = qb_2(A, block_size, tol, k, p, s, A_cpy)
         %Q_i = rf1_simplified(A, block_size, p);
         %Q_i = rf1(A, block_size, p);
         %Q_i = A * randn(n, block_size);
-        Q_i = rs1(A, block_size, p, s);
+        Q_i = RSI(A, block_size, p, s);
         % Ensuring orthogonalization of Q.
         Q_i = orth(Q_i - (Q * (Q' * Q_i)));
         % Deterministic computation of B_i.
@@ -158,7 +158,7 @@ function [K] = rs_krylov(A, k, p)
     end
 end
 
-function [Q] = rs1(A, k, p, s)
+function [Q] = RSI(A, k, p, s)
 
     class_A = class(A);
     [m, n] = size(A);
@@ -189,10 +189,8 @@ function [Q] = rs1(A, k, p, s)
     for i = 1 : p
 
         [Q, ~] = lu(A * Q);
-        if i == p
-            [Q, ~] = qr(A' * Q, 0);
-        else
-            [Q, ~] = lu(A' * Q);
-        end
+        [Q, ~] = lu(A' * Q);
     end
+
+    [Q, ~] = qr(A * Q, 0);
 end
