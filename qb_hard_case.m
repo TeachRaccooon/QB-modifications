@@ -1,6 +1,6 @@
 function[] = qb_hard_case()
-
-    n = 10^6;
+    
+    n = 10^3;
     A = zeros(1, n);
     A(1:500) = 1;
     A = sparse(1:n, 1:n, A, n, n);
@@ -11,8 +11,7 @@ function[] = qb_hard_case()
     tol = 1e-15;
     p = 1;
 
-    A = AbstractOperator;
-    %qb_2(A, b_sz, tol, k, p, A_cpy);
+    qb_2(A, b_sz, tol, k, p, A_cpy);
 end
 
 function [Q, B] = qb_2(A, block_size, tol, k, p, A_cpy)
@@ -57,8 +56,8 @@ function [Q, B] = qb_2(A, block_size, tol, k, p, A_cpy)
         Q = [Q, Q_i]; %#ok<AGROW>
         B = [B; B_i]; %#ok<AGROW>
         fprintf("sqrt(||A||_F^2 - ||B||_F^2) / ||A||_F^2: %e\n", i, approximation_error);
-        %fprintf("||A - QB||_F / ||A||_F %e\n", norm(A_cpy - Q*B, 'fro') / normest(A_cpy, 'fro'));
-        %fprintf("||A - QB||_2 / ||A||_2 %e\n", norm(A_cpy - Q*B, 2) / normest(A_cpy, 2));
+        fprintf("||A - QB||_F / ||A||_F %e\n", norm(A_cpy - Q*B, 'fro') / normest(A_cpy, 'fro'));
+        fprintf("||A - QB||_2 / ||A||_2 %e\n", norm(A_cpy - Q*B, 2) / normest(A_cpy, 2));
         fprintf("||B_i||_2 /||A||_2: %e\n", norm(B_i, 2) / norm2_A);
         fprintf("||B_i||_2 / ||Delta_i-1||_2: %e\n", norm(B_i, 2) / normest(A, 2));
 
@@ -72,11 +71,11 @@ function [Q, B] = qb_2(A, block_size, tol, k, p, A_cpy)
         end
         
         if norm(B_i, 2) / norm2_A < tol && ~indicator_spec
-            fprintf("FRO TERMINATION CRITERIA REACHED AT RANK %d, COMPUTED AT ITERATION %d\n", block_size * (i - 1), i);
+            fprintf("SPEC TERMINATION CRITERIA REACHED AT RANK %d, COMPUTED AT ITERATION %d\n", block_size * (i - 1), i);
             indicator_spec = 1;
             %break;
         elseif norm(B_i, 2) / norm2_A < tol && indicator_spec
-            fprintf("FRO TERMINATION CRITERIA REACHED PREVIOUSLY\n");
+            fprintf("SPEC TERMINATION CRITERIA REACHED PREVIOUSLY\n");
         end
 
         fprintf("\n");
