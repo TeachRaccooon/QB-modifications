@@ -1,25 +1,25 @@
 function[] = qb_hard_case()
 
-    n = 10^3;
+    n = 10^6;
     A = zeros(1, n);
-    A(1:500) = 0.00001;
-    %A(501:1000) = 0.00001;
-    A(1) = 1;
-    A = diag(A);
+    A(1:500) = 1;
+    A = sparse(1:n, 1:n, A, n, n);
+    A(1, 1) = 10;
     A_cpy = A;
     b_sz = 50;
-    k = n;
+    k = 600;
     tol = 1e-15;
     p = 1;
 
-    qb_2(A, b_sz, tol, k, p, A_cpy);
+    A = AbstractOperator;
+    %qb_2(A, b_sz, tol, k, p, A_cpy);
 end
 
 function [Q, B] = qb_2(A, block_size, tol, k, p, A_cpy)
     indicator_fro = 0;
     indicator_spec = 0;
-    norm_A = norm(A, 'fro');
-    norm2_A = norm(A, 2);
+    norm_A = normest(A, 'fro');
+    norm2_A = normest(A, 2);
     % Early termination check on an empty input.
     if norm_A == 0
         fprintf('The input matrix is empty.');
@@ -57,10 +57,10 @@ function [Q, B] = qb_2(A, block_size, tol, k, p, A_cpy)
         Q = [Q, Q_i]; %#ok<AGROW>
         B = [B; B_i]; %#ok<AGROW>
         fprintf("sqrt(||A||_F^2 - ||B||_F^2) / ||A||_F^2: %e\n", i, approximation_error);
-        fprintf("||A - QB||_F / ||A||_F %e\n", norm(A_cpy - Q*B, 'fro') / norm(A_cpy, 'fro'));
-        fprintf("||A - QB||_2 / ||A||_2 %e\n", norm(A_cpy - Q*B, 2) / norm(A_cpy, 2));
+        %fprintf("||A - QB||_F / ||A||_F %e\n", norm(A_cpy - Q*B, 'fro') / normest(A_cpy, 'fro'));
+        %fprintf("||A - QB||_2 / ||A||_2 %e\n", norm(A_cpy - Q*B, 2) / normest(A_cpy, 2));
         fprintf("||B_i||_2 /||A||_2: %e\n", norm(B_i, 2) / norm2_A);
-        fprintf("||B_i||_2 / ||Delta_i-1||_2: %e\n", norm(B_i, 2) / norm(A, 2));
+        fprintf("||B_i||_2 / ||Delta_i-1||_2: %e\n", norm(B_i, 2) / normest(A, 2));
 
 
         if approximation_error < tol && ~indicator_fro

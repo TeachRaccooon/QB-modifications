@@ -1,0 +1,44 @@
+classdef AbstractOperator
+   properties
+      Value {mustBeNumeric}
+   end
+   methods
+      function A = update(A, Q, B)
+         % A is a cell array
+         % Data is a cell array that takes Q, B into account
+         A = [A, Q, B];
+      end
+      function Q = mul(A, Omega, transpose)
+         % A consists of repeated [A, Q, B, Q, B, ...] and represents A -
+         % sum(Q_i * B_i) forall i. 
+         % To represent skecthing, we should multiply every odd element by
+         % Omega and then actually compute Q
+         numels = size(A);
+         % Make sure we don't actually change any element of A
+         A_cpy = A;
+         if transpose
+            % Q = A' * Omega
+            Q = A_cpy(1)' * Omega;
+            for i = 2:numels-1
+                % transpose every element
+                A_cpy(i) = A_cpy(i)';
+                if mod(i, 2) == 0
+                    %
+                    A_cpy(i) = A_cpy(i) * Omega;
+                end
+            end
+         else
+             % Q = A * Omega
+             Q = A_cpy(1) * Omega;
+             for i = 3:numels
+                 if mod(i, 2) ~= 0
+                     % B = B * Omega
+                     A_cpy(i) = A_cpy(i) * Omega;
+                     % Q = A * Omega - QB * Omega
+                     Q = Q - (A_cpy(i - 1) * A_cpy(i));
+                 end
+             end
+         end
+      end
+   end
+end
