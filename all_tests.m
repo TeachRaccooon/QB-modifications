@@ -1,5 +1,5 @@
 function[] = all_tests()
-    %qb_small_hard_case_abstract_operator()
+    qb_small_hard_case_abstract_operator()
     %qb_large_hard_case_abstract_operator()
     %qb_exlarge_hard_case_abstract_operator()
     

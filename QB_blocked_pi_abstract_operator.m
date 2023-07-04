@@ -41,7 +41,8 @@ function [Q, B] = QB_blocked_pi_abstract_operator(A, block_size, tol, k, p)
         % Output update.
         Q = [Q, Q_i]; %#ok<AGROW>
         B = [B; B_i]; %#ok<AGROW>
-        fprintf("sqrt(||A||_F^2 - ||B||_F^2) / ||A||_F^2: %e\n", i, approximation_error);
+        fprintf("Iteration %d, rank if terminated now %d\n", i, size(Q, 2));
+        fprintf("sqrt(||A||_F^2 - ||B||_F^2) / ||A||_F^2: %e\n", approximation_error);
         fprintf("||B_i||_2 /||A||_2: %e\n", norm(B_i, 2) / norm2_A);
         % BELOW COMPUTATIONS REQUIRE TOO MUCH STORAGE
         %fprintf("||B_i||_2 / ||Delta_i-1||_2: %e\n", norm(B_i, 2) / normest(A, 2));
