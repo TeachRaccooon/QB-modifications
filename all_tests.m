@@ -1,5 +1,6 @@
 function[] = all_tests()
-    qb_small_hard_case_abstract_operator()
+    qb_small_hard_case()
+    %qb_small_hard_case_abstract_operator()
     %qb_large_hard_case_abstract_operator()
     %qb_exlarge_hard_case_abstract_operator()
     
@@ -50,6 +51,23 @@ function[] = qb_small_hard_case_abstract_operator()
     A = {A};
 
     QB_blocked_pi_abstract_operator(A, b_sz, tol, k, p);
+    fprintf("/--------------------------------------------------------/\n")
+end
+
+% Same as above, but more info bc no abstarct operator
+function[] = qb_small_hard_case()
+    fprintf("/--------------------------------------------------------/\n")
+    n = 10^3;
+    A = zeros(1, n);
+    A(1:500) = 1;
+    A = sparse(1:n, 1:n, A, n, n);
+    A(1, 1) = 10;
+    b_sz = 50;
+    k = 600;
+    tol = 1e-15;
+    p = 2;
+
+    QB_blocked_pi(A, b_sz, tol, k, p, A);
     fprintf("/--------------------------------------------------------/\n")
 end
 
