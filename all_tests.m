@@ -1,7 +1,11 @@
 function[] = all_tests()
     %qb_small_hard_case_abstract_operator()
-    qb_fast_exp_full_rank()
+    %qb_large_hard_case_abstract_operator()
+    %qb_exlarge_hard_case_abstract_operator()
+    
+    %qb_fast_exp_full_rank()
     %qb_slow_exp_full_rank()
+    
     %qb_fast_exp_low_rank()
     %qb_slow_exp_low_rank()
 end
@@ -29,6 +33,8 @@ end
 % Expected outcome: fro termination criteria reached at rank 500, iteration
 % 500 / b_sz; spec termination criteria reached ar rank 500, iteration (500
 % / b_sz) + 1.
+% This case techinally fits in my ram, but still am using it with an
+% abstract operator for extra safety.
 
 function[] = qb_small_hard_case_abstract_operator()
     fprintf("/--------------------------------------------------------/\n")
@@ -47,9 +53,45 @@ function[] = qb_small_hard_case_abstract_operator()
     fprintf("/--------------------------------------------------------/\n")
 end
 
-% Full-rank case: we expect spec metric to not work, since it is supposed
-% to detect rank at iteration i+1 (which will be off-limits in a full-rank
-% case);
+% This does not fit in my memory anymore, takes ~2 hours to complete on my
+% machine.
+function[] = qb_large_hard_case_abstract_operator()
+    fprintf("/--------------------------------------------------------/\n")
+    n = 10^5;
+    A = zeros(1, n);
+    A(1:500) = 1;
+    A = sparse(1:n, 1:n, A, n, n);
+    A(1, 1) = 10;
+    b_sz = 50;
+    k = 600;
+    tol = 1e-15;
+    p = 2;
+    A = {A};
+
+    QB_blocked_pi_abstract_operator(A, b_sz, tol, k, p);
+    fprintf("/--------------------------------------------------------/\n")
+end
+
+% Extremely large case, suggested by Rob.
+function[] = qb_exlarge_hard_case_abstract_operator()
+    fprintf("/--------------------------------------------------------/\n")
+    n = 10^6;
+    A = zeros(1, n);
+    A(1:500) = 1;
+    A = sparse(1:n, 1:n, A, n, n);
+    A(1, 1) = 10;
+    b_sz = 50;
+    k = 600;
+    tol = 1e-15;
+    p = 2;
+    A = {A};
+
+    QB_blocked_pi_abstract_operator(A, b_sz, tol, k, p);
+    fprintf("/--------------------------------------------------------/\n")
+end
+
+% "Full-rank case" with very small singular values: may terminate early due
+% to the size of last singular values
 function[] = qb_fast_exp_full_rank()
     fprintf("/--------------------------------------------------------/\n")
     n = 10^3;
