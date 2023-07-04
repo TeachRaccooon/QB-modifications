@@ -1,34 +1,6 @@
-function[] = qb_hard_case_abstract_operator()
-
-    
-    n = 10^5;
-    A = zeros(1, n);
-    A(1:500) = 1;
-    A = sparse(1:n, 1:n, A, n, n);
-    A(1, 1) = 10;
-    A_cpy = A;
-    b_sz = 50;
-    k = 600;
-    tol = 1e-15;
-    p = 1;
-    A = {A};
-%{
-    n = 10;
-    A = zeros(1, n);
-    A(1:7) = 1;
-    A = sparse(1:n, 1:n, A, n, n);
-    b_sz = 3;
-    k = 10;
-    p = 0;
-    tol = 1e-15;
-    %cell array
-    A = {A};
-    A_cpy = A;
-%}
-    qb_2(A, b_sz, tol, k, p, A_cpy);
-end
-
-function [Q, B] = qb_2(A, block_size, tol, k, p, A_cpy)
+% This function treats A as an abstract operator
+% On input, A must be a cell array
+function [Q, B] = QB_blocked_pi_abstract_operator(A, block_size, tol, k, p)
     indicator_fro = 0;
     indicator_spec = 0;
     norm_A = normest(A{1}, 'fro');
@@ -52,8 +24,7 @@ function [Q, B] = qb_2(A, block_size, tol, k, p, A_cpy)
             block_size = k - size(B, 1);
         end
         % Consstructiong a sketch for current iteration.
-        Q_i = RSI(A, block_size, p);
-        %s = RandStream("dsfmt19937");
+        Q_i = RangeFinder_PowerIters(A, block_size, p);
         %[Q_i, ~] = qr(mul(A,  orth(randn(n, block_size)), 0), 0);
         % Ensuring orthogonalization of Q.
         Q_i = orth(Q_i - (Q * (Q' * Q_i)));
@@ -71,10 +42,11 @@ function [Q, B] = qb_2(A, block_size, tol, k, p, A_cpy)
         Q = [Q, Q_i]; %#ok<AGROW>
         B = [B; B_i]; %#ok<AGROW>
         fprintf("sqrt(||A||_F^2 - ||B||_F^2) / ||A||_F^2: %e\n", i, approximation_error);
+        fprintf("||B_i||_2 /||A||_2: %e\n", norm(B_i, 2) / norm2_A);
+        % BELOW COMPUTATIONS REQUIRE TOO MUCH STORAGE
+        %fprintf("||B_i||_2 / ||Delta_i-1||_2: %e\n", norm(B_i, 2) / normest(A, 2));
         %fprintf("||A - QB||_F / ||A||_F %e\n", norm(A_cpy - Q*B, 'fro') / normest(A_cpy, 'fro'));
         %fprintf("||A - QB||_2 / ||A||_2 %e\n", norm(A_cpy - Q*B, 2) / normest(A_cpy, 2));
-        fprintf("||B_i||_2 /||A||_2: %e\n", norm(B_i, 2) / norm2_A);
-        %fprintf("||B_i||_2 / ||Delta_i-1||_2: %e\n", norm(B_i, 2) / normest(A, 2));
 
         if approximation_error < tol && ~indicator_fro
             fprintf("FRO TERMINATION CRITERIA REACHED AND COMPUTED AT RANK %d, iteration %d\n", size(Q, 2), i);
@@ -100,7 +72,7 @@ function [Q, B] = qb_2(A, block_size, tol, k, p, A_cpy)
     end
 end
 
-function [Q] = RSI(A, k, p)
+function [Q] = RangeFinder_PowerIters(A, k, p)
 
     [m, n] = size(A{1});
     v = 2 * p + 1;

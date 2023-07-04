@@ -5,10 +5,9 @@ function Q_out = mul(A, Omega, transpose)
  % Omega and then actually compute Q
  numels = size(A);
  % Make sure we don't actually change any element of A
- A_cpy = A;
  if transpose
     % Q = A' * Omega
-    Q_out = A_cpy{1}' * Omega;
+    Q_out = A{1}' * Omega;
     for i = 2:numels-1
         if mod(i, 2) == 0
              % Need to perform block multiplication to avoid instability
@@ -17,21 +16,21 @@ function Q_out = mul(A, Omega, transpose)
              start = 1;
              stop = b_sz;
              while stop <= size(Q_out , 1)
-                    M = [M;  (A_cpy{i + 1}(:, start:stop))' * A_cpy{i}' * Omega]; %#ok<AGROW>
+                    M = [M;  (A{i + 1}(:, start:stop))' * A{i}' * Omega]; %#ok<AGROW>
                     start = stop + 1;
                     stop = stop + b_sz;
              end
              Q_out = Q_out - M;
 
             %THIS EXPRESSION IS STABLE BUT REQUIRES STORAGE
-            %Q_out = Q_out - (A_cpy{i + 1}' * A_cpy{i}' * Omega);
+            %Q_out = Q_out - (A{i + 1}' * A{i}' * Omega);
             %THIS EXPRESSION IS UNSTABLE, BUT SOLVES STORAGE ISSUE
-            %Q_out = Q_out - (A_cpy{i + 1}'*(A_cpy{i}' * Omega));
+            %Q_out = Q_out - (A{i + 1}'*(A{i}' * Omega));
         end
     end
  else
      % Q_out = A * Omega
-     Q_out = A_cpy{1} * Omega;
+     Q_out = A{1} * Omega;
      for i = 3:numels
          if mod(i, 2) ~= 0
              % Need to perform block multiplication to avoid instability
@@ -40,16 +39,16 @@ function Q_out = mul(A, Omega, transpose)
              start = 1;
              stop = b_sz;
              while stop <= size(Q_out , 1)
-                    M = [M;  A_cpy{i - 1}(start:stop, :) * A_cpy{i} * Omega]; %#ok<AGROW>
+                    M = [M;  A{i - 1}(start:stop, :) * A{i} * Omega]; %#ok<AGROW>
                     start = stop + 1;
                     stop = stop + b_sz;
              end
              Q_out = Q_out - M;
 
              %THIS EXPRESSION IS STABLE BUT REQUIRES STORAGE
-             %Q_out = Q_out - (A_cpy{i - 1}*A_cpy{i} * Omega);
+             %Q_out = Q_out - (A{i - 1}*A{i} * Omega);
              %THIS EXPRESSION IS UNSTABLE, BUT SOLVES STORAGE ISSUE
-             %Q_out = Q_out - (A_cpy{i - 1}*(A_cpy{i} * Omega));
+             %Q_out = Q_out - (A{i - 1}*(A{i} * Omega));
          end
      end
  end
