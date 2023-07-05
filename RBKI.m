@@ -12,7 +12,7 @@ function[] = RBKI()
     Y_od = zeros(n, 0);
     Y_ev = zeros(n, 0);
     
-    Y_i = randn(n, 250);
+    Y_i = randn(n, k);
     for j = 1:p
         if mod(j, 2) ~= 0
             [Y_i, ~] = qr(Y_i, 0);
