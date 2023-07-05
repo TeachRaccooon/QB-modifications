@@ -1,4 +1,4 @@
-function[] = RSI()
+function[] = RBKI()
     m = 10^3;
     n = 500;
     k = 500;
@@ -10,11 +10,9 @@ function[] = RSI()
 
     for i = 1:10
         if mod(i, 2) ~= 0
-            [Y, ~] = qr(Y, 0);
-            X = A * Y;
-            [U, Sigma, V_hat] = svd(X, "econ");
-            V = Y * V_hat;
+            Y_i = 
         else
+            size(X)
             [X, ~] = qr(X, 0);
             Y = A' * X;
             [U_hat, Sigma, V] = svd(Y', "econ");

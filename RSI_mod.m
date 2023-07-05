@@ -9,29 +9,31 @@ function[] = RSI_mod()
     p = 3;
     A_cpy = A;
     
-    Q = zeros(m, 0);
+    X = zeros(m, 0);
+    Y = zeros(n, 0);
     U = [];
     Sigma = [];
     V = [];
     for i = 1: ceil(k / b_sz)
 
         
-        Y = randn(n, b_sz);
+        Y_i = randn(n, b_sz);
         for j = 1:p
             if mod(j, 2) ~= 0
-                Y = orth(Y);
-                X = A * Y;
-                [U_i, Sigma_i, V_i] = svd(X, 'econ', 'vector');
-                V_i = Y * V_i;
+                Y_i = orth(Y_i);
+                Y_i = orth(Y_i - (Y * (Y' * Y_i)));
+                X_i = A * Y_i;
+                [U_i, Sigma_i, V_i] = svd(X_i, 'econ', 'vector');
+                V_i = Y_i * V_i;
             else
-                X = orth(X);
-                X = orth(X - (Q * (Q' * X)));
-                Y = A' * X;
-                [U_i, Sigma_i, V_i] = svd(Y', 'econ', 'vector');
-                U_i = X * U_i;
+                X_i = orth(X_i);
+                X_i = orth(X_i - (X * (X' * X_i)));
+                Y_i = A' * X_i;
+                [U_i, Sigma_i, V_i] = svd(Y_i', 'econ', 'vector');
+                U_i = X_i * U_i;
             end
         end
-        Q = [Q, X];               %#ok<AGROW>
+        X = [X, X_i];               %#ok<AGROW>
         U = [U, U_i];             %#ok<AGROW>
         V = [V, V_i];             %#ok<AGROW>
         Sigma = [Sigma; Sigma_i]; %#ok<AGROW>
