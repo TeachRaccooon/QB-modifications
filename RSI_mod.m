@@ -5,7 +5,7 @@ function[] = RSI_mod()
     A = randn(m, n/2);
     A = [A, A];
     b_sz = 50;
-    tol = 1e-16;
+    tol = 1e-15;
     p = 3;
     A_cpy = A;
     
@@ -15,8 +15,6 @@ function[] = RSI_mod()
     Sigma = [];
     V = [];
     for i = 1: ceil(k / b_sz)
-
-        
         Y_i = randn(n, b_sz);
         for j = 1:p
             if mod(j, 2) ~= 0
@@ -33,7 +31,8 @@ function[] = RSI_mod()
                 U_i = X_i * U_i;
             end
         end
-        X = [X, X_i];               %#ok<AGROW>
+        X = [X, X_i];             %#ok<AGROW>
+        Y = [Y, Y_i];             %#ok<AGROW>
         U = [U, U_i];             %#ok<AGROW>
         V = [V, V_i];             %#ok<AGROW>
         Sigma = [Sigma; Sigma_i]; %#ok<AGROW>
@@ -44,6 +43,7 @@ function[] = RSI_mod()
         fprintf("Residual error: %e\n\n", residual_err);
 
         if residual_err < tol
+            fprintf("RESIDUAL TERMINATION CRITERIA REACHED\n");
             break;
         end
 
