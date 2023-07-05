@@ -1,14 +1,7 @@
-function[] = RSI_mod()
-    m = 10^3;
-    n = 500;
-    k = 500;
-    A = randn(m, n/2);
-    A = [A, A];
-    b_sz = 50;
-    tol = 1e-15;
-    p = 3;
+function[] = RSI_blocked(A, b_sz, tol, k, p)
+    [m, n] = size(A);
     A_cpy = A;
-    
+
     X = zeros(m, 0);
     Y = zeros(n, 0);
     U = [];

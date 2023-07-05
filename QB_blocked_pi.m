@@ -1,21 +1,17 @@
-function [Q, B] = QB_blocked_pi(A, block_size, tol, k, p, A_cpy)
+function [Q, B] = QB_blocked_pi(A, block_size, tol, k, p)
+    A_cpy = A;
     indicator_fro = 0;
     indicator_spec = 0;
     norm_A = normest(A, 'fro');
     norm2_A = normest(A, 2);
-    % Early termination check on an empty input.
-    if norm_A == 0
-        fprintf('The input matrix is empty.');
-        return
-    end
+
     % Setting initial error to zero.
     approximation_error = 0;
-    class_A = class(A);
     [m, n] = size(A);
     norm_B = 0;
     % Pre-initialization of output matrices.
-    Q = zeros(m, 0, class_A);
-    B = zeros(0, n, class_A);
+    Q = zeros(m, 0);
+    B = zeros(0, n);
     % Iterative stage.
     for i = 1 : ceil(k / block_size)
         %fprintf(“K in QB %d\n”, k);
@@ -70,8 +66,6 @@ function [Q, B] = QB_blocked_pi(A, block_size, tol, k, p, A_cpy)
 end
 
 function [Q] = RSI(A, k, p)
-
-    class_A = class(A);
     [m, n] = size(A);
     v = 2 * p + 1;
 

@@ -1,5 +1,7 @@
 function[] = all_tests()
-    qb_small_hard_case()
+    rsi_blocked_slow_exp_lowrank()
+
+    %qb_small_hard_case()
     %qb_small_hard_case_abstract_operator()
     %qb_large_hard_case_abstract_operator()
     %qb_exlarge_hard_case_abstract_operator()
@@ -119,7 +121,7 @@ function[] = qb_fast_exp_full_rank()
     tol = 1e-15;
     p = 2;
 
-    QB_blocked_pi(A, b_sz, tol, k, p, A);
+    QB_blocked_pi(A, b_sz, tol, k, p);
     fprintf("/--------------------------------------------------------/\n")
 end
 
@@ -135,7 +137,7 @@ function[] = qb_slow_exp_full_rank()
     tol = 1e-15;
     p = 2;
 
-    QB_blocked_pi(A, b_sz, tol, k, p, A);
+    QB_blocked_pi(A, b_sz, tol, k, p);
     fprintf("/--------------------------------------------------------/\n")
 end
 
@@ -148,7 +150,7 @@ function[] = qb_fast_exp_low_rank()
     tol = 1e-15;
     p = 2;
 
-    QB_blocked_pi(A, b_sz, tol, k, p, A);
+    QB_blocked_pi(A, b_sz, tol, k, p);
     fprintf("/--------------------------------------------------------/\n")
 end
 
@@ -161,7 +163,20 @@ function[] = qb_slow_exp_low_rank()
     tol = 1e-15;
     p = 2;
 
-    QB_blocked_pi(A, b_sz, tol, k, p, A);
+    QB_blocked_pi(A, b_sz, tol, k, p);
+    fprintf("/--------------------------------------------------------/\n")
+end
+
+function[] = rsi_blocked_slow_exp_lowrank()
+    fprintf("/--------------------------------------------------------/\n")
+    n = 10^3;
+    k = 600;
+    [A,~] = gen_exp_spectrum(n, n, 500, 80);
+    b_sz = 50;
+    tol = 1e-15;
+    p = 2;
+
+    RSI_blocked(A, b_sz, tol, k, p);
     fprintf("/--------------------------------------------------------/\n")
 end
 
