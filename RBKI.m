@@ -12,7 +12,7 @@ function[] = RBKI()
     Y_od = zeros(n, 0);
     Y_ev = zeros(n, 0);
     
-    Y_i = randn(n, k);
+    Y_i = randn(n, 250);
     for j = 1:p
         if mod(j, 2) ~= 0
             [Y_i, ~] = qr(Y_i, 0);
@@ -40,7 +40,7 @@ function[] = RBKI()
             U = X_ev * U;
         end
 
-        fprintf("Residual norm: %e\n", sqrt(norm(U' * A - (diag(Sigma) * V'), 'fro')^2 + norm(A*V - (U * diag(Sigma)), 'fro')^2));
+        %fprintf("Residual norm: %e\n", sqrt(norm(U' * A - (diag(Sigma) * V'), 'fro')^2 + norm(A*V - (U * diag(Sigma)), 'fro')^2));
+        disp(norm(A_cpy - U * diag(Sigma) * V', 'fro') / norm(A_cpy, 'fro'));
     end
-    disp(norm(A_cpy - U * diag(Sigma) * V', 'fro') / norm(A_cpy, 'fro'));
 end
