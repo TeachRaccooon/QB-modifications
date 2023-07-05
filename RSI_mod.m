@@ -1,11 +1,11 @@
 function[] = RSI_mod()
     m = 10^3;
-    n = 500
+    n = 500;
     k = 500;
     A = randn(m, n/2);
     A = [A, A];
     b_sz = 50;
-    tol = 1e-15;
+    tol = 1e-16;
     p = 3;
     A_cpy = A;
     
@@ -15,24 +15,38 @@ function[] = RSI_mod()
     V = [];
     for i = 1: ceil(k / b_sz)
 
-        Q_i = randn(n, b_sz);
         
-        Q_i = orth(A * Q_i);
-
-        Q_i = orth(Q_i - (Q * (Q' * Q_i)));
-        %B_i = Q_i' * A;
-        [U_i, Sigma_i, V_i] = svd(Q_i' * A, 'econ', 'vector');
-        U_i = Q_i * U_i;
-
-        Q = [Q, Q_i]; %#ok<AGROW>
-        U = [U, U_i]; %#ok<AGROW>
+        Y = randn(n, b_sz);
+        for j = 1:p
+            if mod(j, 2) ~= 0
+                Y = orth(Y);
+                X = A * Y;
+                [U_i, Sigma_i, V_i] = svd(X, 'econ', 'vector');
+                V_i = Y * V_i;
+            else
+                X = orth(X);
+                X = orth(X - (Q * (Q' * X)));
+                Y = A' * X;
+                [U_i, Sigma_i, V_i] = svd(Y', 'econ', 'vector');
+                U_i = X * U_i;
+            end
+        end
+        Q = [Q, X];               %#ok<AGROW>
+        U = [U, U_i];             %#ok<AGROW>
+        V = [V, V_i];             %#ok<AGROW>
         Sigma = [Sigma; Sigma_i]; %#ok<AGROW>
-        V = [V, V_i]; %#ok<AGROW>
 
-        fprintf("Residual norm: %e\n", sqrt(norm(U_i' * A - (diag(Sigma_i) * V_i'), 'fro')^2 + norm(A*V_i - (U_i * diag(Sigma_i)), 'fro')^2));
+        residual_err = sqrt(norm(U_i' * A - (diag(Sigma_i) * V_i'), 'fro')^2 + norm(A*V_i - (U_i * diag(Sigma_i)), 'fro')^2) / norm(A_cpy, 'fro');
+        
+        fprintf("Iteration %d, rank if terminated now %d\n", i, size(U, 2));
+        fprintf("Residual error: %e\n\n", residual_err);
+
+        if residual_err < tol
+            break;
+        end
 
         A = A - U_i * diag(Sigma_i) * V_i';
     end
 
-    disp(norm(A_cpy - U * diag(Sigma) * V', 'fro') / norm(A_cpy, 'fro'));
+    fprintf("Final error ||A - USigmaV'||_F / ||A||_F: %e\n", norm(A_cpy - U * diag(Sigma) * V', 'fro') / norm(A_cpy, 'fro'));
 end
