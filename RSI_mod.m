@@ -1,6 +1,6 @@
 function[] = RSI_mod()
     m = 10^3;
-    n = m;
+    n = 500
     k = 500;
     A = randn(m, n/2);
     A = [A, A];
@@ -13,13 +13,10 @@ function[] = RSI_mod()
     U = [];
     Sigma = [];
     V = [];
-    for i = 1: ceil(n / b_sz)
+    for i = 1: ceil(k / b_sz)
+
+        Q_i = randn(n, b_sz);
         
-        Q_i = randn(m, b_sz);
-        for j=1:p
-            Q_i = orth(A' * Q_i);
-            Q_i = orth(A * Q_i);
-        end
         Q_i = orth(A * Q_i);
 
         Q_i = orth(Q_i - (Q * (Q' * Q_i)));
