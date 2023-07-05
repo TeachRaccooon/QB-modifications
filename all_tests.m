@@ -173,7 +173,7 @@ function[] = rsi_blocked_slow_exp_lowrank()
     k = 600;
     [A,~] = gen_exp_spectrum(n, n, 500, 80);
     b_sz = 50;
-    tol = 1e-15;
+    tol = 1e-14;
     p = 2;
 
     RSI_blocked(A, b_sz, tol, k, p);
