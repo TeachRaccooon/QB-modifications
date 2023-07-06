@@ -10,7 +10,7 @@ function[] = RSI_blocked(A, b_sz, tol, k, p)
     V = [];
     Sigma = [];
 
-    for i = 1: ceil(k / b_sz)
+    for i = 1 : ceil(k / b_sz)
         Y_i = randn(n, b_sz);
         for j = 1:p
             if mod(j, 2) ~= 0
@@ -47,7 +47,7 @@ function[] = RSI_blocked(A, b_sz, tol, k, p)
         % Used for the stopping criteria here
         residual_err = sqrt(norm(U_i' * A - (diag(Sigma_i) * V_i'), 'fro')^2 + norm(A*V_i - (U_i * diag(Sigma_i)), 'fro')^2) / norm(A_cpy, 'fro');
         
-        fprintf("Iteration %d, rank if terminated now: %d\n", i, size(U, 2));
+        fprintf("Iteration %d, rank if terminated now: %d\n", i, nnz(Sigma));
         fprintf("Relative residual error: %17e\n", residual_err);
         fprintf("||A - USigmaV'||_F / ||A||_F: %e\n", norm(A_cpy - U * diag(Sigma) * V', 'fro') / norm(A_cpy, 'fro'));
 

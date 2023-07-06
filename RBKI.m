@@ -16,9 +16,7 @@ function[] = RBKI()
     for j = 1:min(ceil(n/k), p)
         if mod(j, 2) ~= 0
             [Y_i, ~] = qr(Y_i, 0);
-            if j ~= 1
-                [Y_i, ~] = qr(Y_i - (Y_od * (Y_od' * Y_i)), 0);
-            end
+            [Y_i, ~] = qr(Y_i - (Y_od * (Y_od' * Y_i)), 0);
             X_i = A * Y_i;
 
             X_od = [X_od, X_i]; %#ok<AGROW>
@@ -28,9 +26,7 @@ function[] = RBKI()
             V = Y_od * V;
         else
             [X_i, ~] = qr(X_i, 0);
-            if j ~= 2
-                [X_i, ~] = qr(X_i - (X_ev * (X_ev' * X_i)), 0);
-            end
+            [X_i, ~] = qr(X_i - (X_ev * (X_ev' * X_i)), 0);
             Y_i = A' * X_i;
 
             X_ev = [X_ev, X_i]; %#ok<AGROW>
