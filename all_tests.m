@@ -1,5 +1,7 @@
 function[] = all_tests()
-    rbki_blocked_slow_exp_lowrank
+    %rbki_blocked_small_hard_case()
+
+    %rbki_blocked_slow_exp_lowrank
     %rsi_blocked_slow_exp_lowrank()
     
     %qb_small_hard_case()
@@ -187,6 +189,26 @@ function[] = rbki_blocked_slow_exp_lowrank()
     k = 600;
     [A,~] = gen_exp_spectrum(n, n, 500, 80);
     b_sz = 25;
+    tol = 1e-15;
+    p = 2;
+
+    RBKI_blocked(A, b_sz, tol, n, p);
+    fprintf("/--------------------------------------------------------/\n")
+end
+
+function[] = rbki_blocked_small_hard_case()
+    fprintf("/--------------------------------------------------------/\n")
+    n = 10^3;
+    k = 600;
+    A = zeros(1, n);
+    A(1, 1) = 10;
+    A(1, 2) = 1;
+    for i = 3:k
+        A(1, i) = A(1, i-1) - (1 / n);
+    end
+    A = diag(A);
+
+    b_sz = 50;
     tol = 1e-15;
     p = 2;
 
