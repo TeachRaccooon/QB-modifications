@@ -13,7 +13,7 @@ function[] = RBKI()
     Y_ev = zeros(n, 0);
     
     Y_i = randn(n, k);
-    for j = 1:p
+    for j = 1:min(ceil(n/k), p)
         if mod(j, 2) ~= 0
             [Y_i, ~] = qr(Y_i, 0);
             if j ~= 1
