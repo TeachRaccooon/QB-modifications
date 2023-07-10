@@ -19,17 +19,17 @@ function[] = RBKI_blocked(A, b_sz, tol, k, p)
 
         for j = 1:min(ceil(k/b_sz), p)
             if mod(j, 2) ~= 0
-                [Y_i, ~] = qr(Y_i, 0);
                 % Reorthogonalization wrt odd iterates
-                [Y_i, ~] = qr(Y_i - (Y_od * (Y_od' * Y_i)), 0);
+                Y_i = Y_i - (Y_od * (Y_od' * Y_i));
+                [Y_i, ~] = qr(Y_i, 0);
                 X_i = A * Y_i;
     
                 X_od = [X_od, X_i]; %#ok<AGROW>
                 Y_od = [Y_od, Y_i]; %#ok<AGROW>
             else
-                [X_i, ~] = qr(X_i, 0);
                 % Reorthogonalization wrt even iterates
-                [X_i, ~] = qr(X_i - (X_ev * (X_ev' * X_i)), 0);
+                X_i = X_i - (X_ev * (X_ev' * X_i));
+                [X_i, ~] = qr(X_i, 0);
                 Y_i = A' * X_i;
     
                 X_ev = [X_ev, X_i]; %#ok<AGROW>
