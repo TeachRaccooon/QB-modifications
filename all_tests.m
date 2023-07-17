@@ -1,4 +1,6 @@
 function[] = all_tests()
+    rbki_blocked_extended_max
+    rbki_blocked_extended_rob()
     %rbki_blocked_small_hard_case()
 
     %rbki_blocked_slow_exp_lowrank
@@ -213,6 +215,36 @@ function[] = rbki_blocked_small_hard_case()
     p = 2;
 
     RBKI_blocked(A, b_sz, tol, n, p);
+    fprintf("/--------------------------------------------------------/\n")
+end
+
+function[] = rbki_blocked_extended_rob()
+    fprintf("/--------------------------------------------------------/\n")
+
+    n = 10^3;
+    k = 600;
+    [A,~] = gen_exp_spectrum(n, n, 500, 80);
+    b_sz = 25;
+    tol = 1e-15;
+    p = 3;
+
+
+    RBKI_blocked_extended_rob(A, b_sz, tol, n, p);
+    fprintf("/--------------------------------------------------------/\n")
+end
+
+function[] = rbki_blocked_extended_max()
+    fprintf("/--------------------------------------------------------/\n")
+
+    n = 10^3;
+    k = 600;
+    [A,~] = gen_exp_spectrum(n, n, 500, 80);
+    b_sz = 25;
+    tol = 1e-15;
+    p = 3;
+
+
+    RBKI_blocked_extended_max(A, b_sz, tol, n, p);
     fprintf("/--------------------------------------------------------/\n")
 end
 

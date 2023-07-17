@@ -1,7 +1,7 @@
 function[] = RBKI()
     m = 10^3;
     n = 500;
-    k = 500;
+    k = 100;
     A = randn(m, n/2);
     A = [A, A];
     A_cpy = A;
@@ -22,8 +22,10 @@ function[] = RBKI()
             X_od = [X_od, X_i]; %#ok<AGROW>
             Y_od = [Y_od, Y_i]; %#ok<AGROW>
 
-            [U, Sigma, V] = svd(X_od, 'econ', 'vector');
-            V = Y_od * V;
+            [U, Sigma, V_hat] = svd(X_od, 'econ', 'vector');
+            V = Y_od * V_hat;
+
+            norm(A' * X_od * V_hat * pinv(diag(Sigma)) - V * diag(Sigma), 'fro');
         else
             [X_i, ~] = qr(X_i, 0);
             [X_i, ~] = qr(X_i - (X_ev * (X_ev' * X_i)), 0);
@@ -32,8 +34,10 @@ function[] = RBKI()
             X_ev = [X_ev, X_i]; %#ok<AGROW>
             Y_ev = [Y_ev, Y_i]; %#ok<AGROW>
             
-            [U, Sigma, V] = svd(Y_ev', 'econ', 'vector');
-            U = X_ev * U;
+            [U_hat, Sigma, V] = svd(Y_ev', 'econ', 'vector');
+            U = X_ev * U_hat;
+
+            norm(A * Y_ev * U_hat * pinv(diag(Sigma)) - U * diag(Sigma), 'fro');
         end
 
         %fprintf("Residual norm: %e\n", sqrt(norm(U' * A - (diag(Sigma) * V'), 'fro')^2 + norm(A*V - (U * diag(Sigma)), 'fro')^2));
