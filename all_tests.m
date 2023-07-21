@@ -1,6 +1,10 @@
 function[] = all_tests()
-    rbki_blocked_extended_max
-    rbki_blocked_extended_rob()
+
+    rbki_blocked_extended_max_stable()
+    rbki_blocked_extended_rob_stable()
+
+    %rbki_blocked_extended_max()
+    %rbki_blocked_extended_rob()
     %rbki_blocked_small_hard_case()
 
     %rbki_blocked_slow_exp_lowrank
@@ -238,13 +242,78 @@ function[] = rbki_blocked_extended_max()
 
     n = 10^3;
     k = 600;
+
+    %A = zeros(1, n);
+    %A(:, 1:9) = [10, 9, 8, 7, 6, 5, 4, 3, 2];
+    %for i = 10:k
+        %A(1, i) = A(1, i-1) - (1 / n);
+    %end
+    %A = diag(A);
     [A,~] = gen_exp_spectrum(n, n, 500, 80);
-    b_sz = 25;
+
+    b_sz = 10;
+    tol = 1e-14;
+    p = 30;
+
+
+    RBKI_blocked_extended_max(A, b_sz, tol, 10, p);
+    fprintf("/--------------------------------------------------------/\n")
+end
+
+function[] = rbki_blocked_extended_rob_stable()
+    fprintf("/--------------------------------------------------------/\n")
+
+    n = 10^3;
+    k = 600;
+
+    A = zeros(1, n);
+    A(:, 1:9) = [10, 9, 8, 7, 6, 5, 4, 3, 2];
+    for i = 10:k
+        A(1, i) = A(1, i-1) - (1 / n);
+    end
+    A = diag(A);
+
+    % True rank is 500
+    %[A,~] = gen_exp_spectrum(n, n, 500, 80);
+
+    % target rank is 10
+    r = 10;
+
+    % "block size" is twice the target rank
+    b_sz =   4 * r;
+
+    tol = 1e-14;
+    num_iters = 16;
+
+
+    RBKI_blocked_extended_rob_stable(A, b_sz, tol, r, num_iters);
+    fprintf("/--------------------------------------------------------/\n")
+end
+
+function[] = rbki_blocked_extended_max_stable()
+    fprintf("/--------------------------------------------------------/\n")
+  
+    n = 10^3;
+    
+    % template for the "Hard case"
+    %A = zeros(1, n);
+    %A(:, 1:9) = [10, 9, 8, 7, 6, 5, 4, 3, 2];
+    %for i = 10:600
+    %    A(1, i) = A(1, i-1) - (1 / n);
+    %end
+    %A = diag(A);
+
+
+    % True rank is 500
+    [A,~] = gen_exp_spectrum(n, n, 500, 80);
+
     tol = 1e-15;
-    p = 3;
+    num_iters = 16;
 
+    S = svd(A);
+    plot(1:500, S(1:500, 1));
 
-    RBKI_blocked_extended_max(A, b_sz, tol, n, p);
+    RBKI_blocked_extended_max_stable(A, 10, 4, tol, 500, num_iters);
     fprintf("/--------------------------------------------------------/\n")
 end
 
