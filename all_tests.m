@@ -1,7 +1,9 @@
 function[] = all_tests()
 
-    rbki_blocked_extended_max_stable()
-    rbki_blocked_extended_rob_stable()
+    qrbk_max_stable()
+
+    %rbki_blocked_extended_max_stable()
+    %rbki_blocked_extended_rob_stable()
 
     %rbki_blocked_extended_max()
     %rbki_blocked_extended_rob()
@@ -314,6 +316,33 @@ function[] = rbki_blocked_extended_max_stable()
     plot(1:500, S(1:500, 1));
 
     RBKI_blocked_extended_max_stable(A, 10, 4, tol, 500, num_iters);
+    fprintf("/--------------------------------------------------------/\n")
+end
+
+function[] = qrbk_max_stable()
+    fprintf("/--------------------------------------------------------/\n")
+  
+    n = 10^3;
+    
+    % template for the "Hard case"
+    %A = zeros(1, n);
+    %A(:, 1:9) = [10, 9, 8, 7, 6, 5, 4, 3, 2];
+    %for i = 10:600
+    %    A(1, i) = A(1, i-1) - (1 / n);
+    %end
+    %A = diag(A);
+
+
+    % True rank is 500
+    [A,~] = gen_exp_spectrum(n, n, 500, 80);
+
+    tol = 1e-15;
+    num_iters = 16;
+
+    S = svd(A);
+    plot(1:500, S(1:500, 1));
+
+    QBBK_max_stable(A, 10, 4, tol, 500, num_iters);
     fprintf("/--------------------------------------------------------/\n")
 end
 
