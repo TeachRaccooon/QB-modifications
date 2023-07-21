@@ -2,7 +2,7 @@ function[] = QBBK_max_stable(A, block_size, inner_block_size_factor, tol, target
     [m, n] = size(A);
     A_cpy = A;
     
-    Q = [];
+    Q = zeros(m, 0);
     B = [];
 
     for j = 1:ceil(target_rank / block_size)
@@ -68,7 +68,11 @@ function[] = QBBK_max_stable(A, block_size, inner_block_size_factor, tol, target
                 %fprintf("True residual error: %e, Krylov iterations: %d\n", norm(E_true(:, 1:block_size), 'fro'), i);
         end
 
+        U_j = U_j(:, 1:block_size);
+        U_j = orth(U_j - (Q * (Q' * U_j)));
+
         fprintf("U_j orth check: %e\n", norm(U_j' * U_j - eye(size(U_j, 2), size(U_j, 2)), 'fro'));
+        
         B_j = U_j' * A;
 
         % Output update 
@@ -87,5 +91,6 @@ function[] = QBBK_max_stable(A, block_size, inner_block_size_factor, tol, target
         A = A - U_j * B_j;
         fprintf("\n");
     end
+    fprintf("Final orthogonality of Q: %e\n", norm(Q' * Q - eye(size(Q, 2), size(Q, 2)), 'fro'));
     fprintf("Inner dimension of Q, B: %d\n", size(Q, 2));
 end
