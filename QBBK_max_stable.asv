@@ -48,25 +48,23 @@ function[] = QBBK_max_stable(A, block_size, inner_block_size_factor, tol, target
                 W_ev = [W_ev, W_i]; %#ok<AGROW>
             end
             if mod(i, 2) ~= 0
-                %[U_hat_j, Sigma_j, V_hat_j] = svd(R', 'econ', 'vector');
-                [U_hat_j, ~] = qr(R', 0);
+                [U_hat_j, Sigma_j, V_hat_j] = svd(R', 'econ', 'vector');
                 U_j = X_ev * U_hat_j;
-                %V_j = Y_od * V_hat_j;
-                %E = Z_od * V_hat_j - U_j * diag(Sigma_j);
+                V_j = Y_od * V_hat_j;
+                E = Z_od * V_hat_j - U_j * diag(Sigma_j);
 
                 %E_true = A_cpy * V_j - U_j * Sigma_j;
             else
-                %[U_hat_j, Sigma_j, V_hat_j] = svd(S, 'econ', 'vector');
-                [U_hat_j, ~] = qr(S, 0);
+                [U_hat_j, Sigma_j, V_hat_j] = svd(S, 'econ', 'vector');
                 U_j = X_ev * U_hat_j;
-                %V_j = Y_od * V_hat_j;
-                %E = W_ev * U_hat_j - V_j * diag(Sigma_j);
+                V_j = Y_od * V_hat_j;
+                E = W_ev * U_hat_j - V_j * diag(Sigma_j);
                 
                 %E_true = A_cpy * U_j - V_j * Sigma_j;
             end
 
-                %residual_err = norm(E(:, 1:block_size), 'fro');
-                %fprintf("Short residual error: %e, Krylov iterations: %d\n", residual_err, i);
+                residual_err = norm(E(:, 1:block_size), 'fro');
+                fprintf("Short residual error: %e, Krylov iterations: %d\n", residual_err, i);
                 %fprintf("True residual error: %e, Krylov iterations: %d\n", norm(E_true(:, 1:block_size), 'fro'), i);
         end
 

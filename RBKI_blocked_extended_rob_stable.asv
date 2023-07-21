@@ -60,8 +60,8 @@ function[] = RBKI_blocked_extended_rob_stable(A, k, tol, r, num_iters)
         
         residual_err = norm(E(:, 1:r), 'fro');
         true_residual_err = norm(E_true(:, 1:r), 'fro');
-        fprintf("Short residual error: %e, iteration: %d\n", residual_err, i);
-        fprintf("True residual error:  %e, iteration: %d\n\n", true_residual_err, i);
+        fprintf("Short relative residual error: %e, iteration: %d\n", residual_err, i);
+        fprintf("True residual error:     %e, iterations: %d\n\n", true_residual_err, i);
         if residual_err < tol
            % break;
         end

@@ -1,9 +1,9 @@
 function[] = all_tests()
 
-    qrbk_max_stable()
+   % qrbk_max_stable()
 
     %rbki_blocked_extended_max_stable()
-    %rbki_blocked_extended_rob_stable()
+    rbki_blocked_extended_rob_stable()
 
     %rbki_blocked_extended_max()
     %rbki_blocked_extended_rob()
@@ -268,15 +268,15 @@ function[] = rbki_blocked_extended_rob_stable()
     n = 10^3;
     k = 600;
 
-    A = zeros(1, n);
-    A(:, 1:9) = [10, 9, 8, 7, 6, 5, 4, 3, 2];
-    for i = 10:k
-        A(1, i) = A(1, i-1) - (1 / n);
-    end
-    A = diag(A);
+    %A = zeros(1, n);
+    %A(:, 1:9) = [10, 9, 8, 7, 6, 5, 4, 3, 2];
+    %for i = 10:k
+    %    A(1, i) = A(1, i-1) - (1 / n);
+    %end
+    %A = diag(A);
 
     % True rank is 500
-    %[A,~] = gen_exp_spectrum(n, n, 500, 80);
+    [A,~] = gen_exp_spectrum(n, n, 500, 80);
 
     % target rank is 10
     r = 10;
@@ -337,7 +337,7 @@ function[] = qrbk_max_stable()
     [A,~] = gen_exp_spectrum(n, n, 500, 80);
 
     tol = 1e-15;
-    num_iters = 16;
+    num_iters = 1;
 
     S = svd(A);
     plot(1:500, S(1:500, 1));
