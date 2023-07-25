@@ -12,19 +12,18 @@ function[] = RBKI_blocked_extended_rob_stable(A, k, tol, r, num_iters)
     W_i = A' * X_i;
     Y_i = W_i;
 
-    R = [];
-    S = [];
+    R = []; S = [];
     
-    X_ev = X_i;
-    Y_od = zeros(n, 0);
+    X_ev = X_i; Y_od = zeros(n, 0);
     
-    Z_od = [];
-    W_ev = W_i;
+    Z_od = []; W_ev = W_i;
 
     for i = 1:num_iters
         if mod(i, 2) ~= 0
             R_i = Y_od' * Y_i;
             Y_i = Y_i - Y_od * R_i;
+            update = Y_od' * Y_i;
+            Y_i = Y_i - Y_od * update;
             [Y_i, R_ii] = qr(Y_i, 0);
             R = [R, R_i; zeros(size(R_ii, 1), size(R, 2)), R_ii]; %#ok<AGROW>
             Z_i = A * Y_i;
@@ -36,12 +35,14 @@ function[] = RBKI_blocked_extended_rob_stable(A, k, tol, r, num_iters)
             [U_hat, Sigma, V_hat] = svd(R', 'econ', 'vector');
             U = X_ev * U_hat;
             V = Y_od * V_hat;
-            E = Z_od * V_hat - U * diag(Sigma);
-
-            E_true = (A * V) - (U * Sigma);
+            
+            E = (Z_od * V_hat) - (U * diag(Sigma));
+            E_true = (A * V) - (U * diag(Sigma));
         else
             S_i = X_ev' * X_i;
             X_i = X_i - X_ev * S_i;
+            update = X_ev' * X_i;
+            X_i = X_i - X_ev * update;
             [X_i, S_ii] = qr(X_i, 0);
             S = [S, S_i; zeros(size(S_ii, 1), size(S, 2)), S_ii]; %#ok<AGROW>
             W_i = A' * X_i;
@@ -53,9 +54,9 @@ function[] = RBKI_blocked_extended_rob_stable(A, k, tol, r, num_iters)
             [U_hat, Sigma, V_hat] = svd(S, 'econ', 'vector');
             U = X_ev * U_hat;
             V = Y_od * V_hat;
-            E = W_ev * U_hat - V * diag(Sigma);
+            E = (W_ev * U_hat) - (V * diag(Sigma));
 
-            E_true = (A' * U) - (V * Sigma);
+            E_true = (A' * U) - (V * diag(Sigma));
         end
         
         residual_err = norm(E(:, 1:r), 'fro');
@@ -66,6 +67,6 @@ function[] = RBKI_blocked_extended_rob_stable(A, k, tol, r, num_iters)
            % break;
         end
     end
-    fro_err = norm(A - U * diag(Sigma) * V', 'fro') / norm(A, 'fro');
-    fprintf("||A - USigmaV'||_F / ||A||_F: %13e\n", fro_err);
+    %fro_err = norm(A - U * diag(Sigma) * V', 'fro') / norm(A, 'fro');
+    %fprintf("||A - USigmaV'||_F / ||A||_F: %13e\n", fro_err);
 end
