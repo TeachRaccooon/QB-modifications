@@ -1,8 +1,8 @@
 function[] = all_tests()
 
-    %qrbk_max_stable()
+    qrbk_max_stable()
 
-    rbki_blocked_extended_max_stable()
+    %rbki_blocked_extended_max_stable()
     %rbki_blocked_extended_rob_stable()
 
     %rbki_blocked_extended_max()
@@ -340,10 +340,11 @@ function[] = qrbk_max_stable()
     tol = 1e-14;
     num_iters = 2;
 
-    S = svd(A);
-    plot(1:500, S(1:500, 1));
+    %S = svd(A);
+    %plot(1:600, S(1:600, 1));
 
-    QBBK_max_stable(A, 10, 2, tol, 500, num_iters);
+    err_ratio_vector = QBBK_max_stable(A, 10, 2, tol, 1000, num_iters);
+    plot(err_ratio_vector);
     fprintf("/--------------------------------------------------------/\n")
 end
 

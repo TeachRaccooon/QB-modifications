@@ -1,0 +1,52 @@
+function[] = QB_tests()
+
+    qb_case()
+
+
+end
+
+% Generator for random matrix with an exponentially decaying spectrum
+function [A, s] = gen_exp_spectrum(m, n, k, t)
+    spectrum = exp((1 : k) / -t);
+    [A, s] = gen_test_mat(m, n, k, spectrum);
+end
+function [A, S] = gen_test_mat(m, n, k, spectrum)
+    Buf = randn(m, k);
+    [U, ~] = qr(Buf, 0);
+    Buf = randn(n, k);
+    [V, ~] = qr(Buf, 0);
+    if isscalar(spectrum)
+        spectrum = abs(randn(1, k));
+        spectrum = sort(spectrum,'descend');
+    end
+    S = spdiags(spectrum', 0, k, k);
+    A = U * S * V';
+end
+
+function[] = qb_case()
+    fprintf("/--------------------------------------------------------/\n")
+    n = 10^3;
+
+    %A = zeros(1, n);
+    %A(:, 1:9) = [10, 9, 8, 7, 6, 5, 4, 3, 2];
+    %for i = 10:k
+    %    A(1, i) = A(1, i-1) - (1 / n);
+    %end
+    %A = diag(A);
+
+    A = zeros(1, n);
+    A(1, 1) = 1;
+    for i = 2:n
+        A(1, i) = 
+    end
+
+
+    b_sz = 50;
+    k = 600;
+    tol = 1e-15;
+    p = 2;
+    A = {A};
+
+    QB_blocked_pi_abstract_operator(A, b_sz, tol, k, p);
+    fprintf("/--------------------------------------------------------/\n")
+end
