@@ -63,7 +63,7 @@ function[] = Rob_test(n)
     tic;
     [U, Sigma, V] = RBKI_incremental_final(A, n, tol);
     fprintf("RBKI takes %d seconds\n", toc);
-    norm(A_2 - U * diag(Sigma) * V', 'fro') / norm(A_2, 'fro')
+    norm(A_2 - U * Sigma * V', 'fro') / norm(A_2, 'fro')
 
     tic;
     [U, Sigma, V] = svdsketch(A_1, tol);

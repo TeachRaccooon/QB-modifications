@@ -54,11 +54,11 @@ function[U, Sigma, V] = RBKI_incremental_final(A, k, tol)
     end
     %fprintf("Total iters %d\n", i);
     if mod(i, 2) ~= 0
-        [U_hat, Sigma, V_hat] = svd(R', 'econ', 'vector');
+        [U_hat, Sigma, V_hat] = svd(R', 'econ');
         U = X_ev * U_hat;
         V = Y_od * V_hat;
     else
-        [U_hat, Sigma, V_hat] = svd(S, 'econ', 'vector');
+        [U_hat, Sigma, V_hat] = svd(S, 'econ');
 
         U = X_ev * U_hat;
         V = Y_od * V_hat;
