@@ -1,8 +1,7 @@
 function[] = RSVD_tests()
-    disp("ALL GOOD\n")
-    %Rob_test(5 * 10^4);
-    %Rob_test(5 * 10^5);
-    %Rob_test(5 * 10^6);
+    Rob_test(5 * 10^4);
+    Rob_test(5 * 10^5);
+    Rob_test(5 * 10^6);
     %RBKI_incremental_test();
 end
 
