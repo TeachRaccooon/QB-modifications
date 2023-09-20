@@ -1,0 +1,45 @@
+function[] = RSVD_tests()
+
+    RBKI_incremental_test();
+end
+
+% Generator for random matrix with an exponentially decaying spectrum
+function [A, s] = gen_exp_spectrum(m, n, k, t)
+    spectrum = exp((1 : k) / -t);
+    [A, s] = gen_test_mat(m, n, k, spectrum);
+end
+function [A, S] = gen_test_mat(m, n, k, spectrum)
+    Buf = randn(m, k);
+    [U, ~] = qr(Buf, 0);
+    Buf = randn(n, k);
+    [V, ~] = qr(Buf, 0);
+    if isscalar(spectrum)
+        spectrum = abs(randn(1, k));
+        spectrum = sort(spectrum,'descend');
+    end
+    S = spdiags(spectrum', 0, k, k);
+    A = U * S * V';
+end
+
+function[] = RBKI_incremental_test()
+    fprintf("/--------------------------------------------------------/\n")
+    n = 100;
+    tol = 1e-16;
+    k = 50;
+    inner_block_size_factor = 2;
+
+    A = zeros(1, n);
+    A(:, 1:9) = [10, 9, 8, 7, 6, 5, 4, 3, 2];
+    for i = 10:k
+        A(1, i) = A(1, i-1) - (1 / n);
+    end
+    A = diag(A);
+    A_cpy = A;
+    %[A,~] = gen_exp_spectrum(n, n, k, 80);
+
+    [U, Sigma, V] = RBKI_incremental_final(A, inner_block_size_factor * k, tol)
+
+    norm(A_cpy - U * Sigma * V', 'fro') / norm(A_cpy, 'fro')
+
+    fprintf("/--------------------------------------------------------/\n")
+end
